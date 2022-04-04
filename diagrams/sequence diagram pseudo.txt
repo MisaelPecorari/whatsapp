@@ -1,0 +1,7 @@
+title Whatsapp group
+
+Message Publisher -> Topic: publishEvent(sender, message, users)
+Topic -> Message Listener: handleEvent(messageEvent)
+Message Listener -> Message Service: addMessage(group, sender, message)
+Message Service ->Message Service: processMessages()
+Message Service -> DB: update(users)

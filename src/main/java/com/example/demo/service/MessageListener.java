@@ -4,10 +4,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Group;
-import com.example.demo.model.GroupMessage;
 import com.example.demo.model.MessageEvent;
 import com.example.demo.model.User;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,7 +16,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class MessageListener {
+
+    private final MessageService messageService;
 
     @EventListener
     public void handleMessageEvent(MessageEvent event) {
@@ -24,15 +27,6 @@ public class MessageListener {
         User senderUser = event.getSender();
         String message = event.getMessage();
         log.info("[{}] {}: {}", group.getName(), senderUser.getName(), message);
-        addMessage(group, senderUser, message);
-    }
-
-    private void addMessage(Group group, User senderUser, String message) {
-        group.getUsers().forEach(user -> {
-            if (user.getId() != senderUser.getId()) {
-                GroupMessage newMessage = new GroupMessage(group.getName(), senderUser.getName(), message);
-                user.addMessage(newMessage);
-            }
-        });
+        messageService.addMessage(group, senderUser, message);
     }
 }
